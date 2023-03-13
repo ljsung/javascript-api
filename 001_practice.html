@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState, useEffect } = React;
+
+        function JokeItem({ joke }) {
+            return (
+                <div className="item">
+                    <p>
+                        {joke}
+                    </p>
+                </div>
+            );
+        }
+
+        function JokeList() {
+
+            const [jokes, setJokes] = useState([]);
+
+            useEffect(
+                () => {
+                    fetch('https://icanhazdadjoke.com/search', {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => setJokes(data.results));
+                },
+                []
+            );
+            return (
+                <div>
+                    {jokes.map(joke => <JokeItem joke={joke.joke} key={joke.id} />)}
+                </div>
+            );
+
+        }
+        function Title() {
+            return <h1>USA 아재개그 모음</h1>;
+        }
+
+        function App() {
+
+            return (
+
+                <>
+                    <Title />
+                    <JokeItem />
+                    <JokeList />
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+    </script>
+</body>
+
+</html>

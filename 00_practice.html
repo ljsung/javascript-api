@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState } = React
+
+        function SearchBox({ setTitleUrl }) {
+
+            const [selectDate, setSelectDate] = useState('');
+            const [selectRank, setSelectRank] = useState('');
+
+            const onClickhandler = () => {
+                axios.get(`https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=${selectDate}`)
+                    .then(res => {
+                        console.log(res.data.boxOfficeResult.dailyBoxOfficeList[selectRank - 1].movieNm);
+                        setTitleUrl(res.data.boxOfficeResult.dailyBoxOfficeList[selectRank - 1].movieNm);
+                    })
+            }
+
+            return (
+                <>
+                    <input
+                        type="search"
+                        name="searchDate"
+                        value={selectDate}
+                        onChange={e => setSelectDate(e.target.value)}
+                    />
+                    <br />
+                    <input
+                        type="search"
+                        name="searchRank"
+                        value={selectRank}
+                        onChange={e => setSelectRank(e.target.value)}
+                    />
+                    <button onClick={onClickhandler}> 조회</button>
+                </>
+            );
+        }
+
+        function TitleBox({ titleUrl }) {
+
+            return <label>{titleUrl}</label>
+        }
+
+        function App() {
+
+            const [titleUrl, setTitleUrl] = useState('');
+
+            return (
+                <>
+                    <SearchBox setTitleUrl={setTitleUrl} />
+                    <br />
+                    <TitleBox titleUrl={titleUrl} />
+                </>
+            )
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+
+</html>

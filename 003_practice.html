@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const { useState, useEffect } = React;
+
+        function Soccer({ soccer }) {
+
+
+            return (
+                <div className="soccer">
+                    <h4>{soccer.name} ({soccer.soccername})</h4>
+                    <p>
+                        title : {soccer.title}<br />
+                        competition : {soccer.competition}<br />
+                        matchviewUrl : {soccer.matchview}<br />
+                        thumbnail : {soccer.thumbnail} <br />
+                        date : {soccer.date} <br />
+                    </p>
+                </div>
+            );
+        }
+
+        function SoccerList() {
+
+            const [soccer, setSoccer] = useState([]);
+
+            useEffect(
+                () => {
+                    fetch('https://www.scorebat.com/video-api/v3/feed/?token=Njc3MThfMTY3ODY5ODQ2OV9mMTM5ODhjNjA4M2FiODUyNjA4M2I4ZDEzMjc2ZDY2MzliYjNhMjFh')
+                        .then(response => response.json())
+                        .then(responseUsers => setSoccer(responseUsers));
+                },
+                []
+            );
+
+            return (
+                <div>
+                    {soccer.map(soccer => <Soccer soccer={soccer} key={soccer.title} />)}
+                </div>
+            );
+        }
+
+        function Title() {
+
+            return <h1>축구경기 목록</h1>;
+
+        }
+
+        function App() {
+
+            return (
+                <>
+                    <Title />
+                    <SoccerList />
+                </>
+            )
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+
+</html>
